@@ -9,107 +9,50 @@ using var context = new AppDbContext();
  IUnitOfWork unitOfWork = new UnitOfWork(context);
 
 IRuleConstructionService service = new RuleConstructionService(unitOfWork);
-/*
-var organization = new Organization
-{
-    Name = "ФНС",
-    Address = "Москва"
-};
 
-var guide = new Guide
+
+Console.WriteLine(context.Database.CanConnect());
+context.Database.Migrate();
+Console.WriteLine("Migration complete");
+
+
+Organization organization = new Organization
 {
-    Message = "Обратитесь в ФНС",
-    Refuse = "Получение невозможно без ИНН"
+    Name = "Фотостудия",
+    Address = "Москва"
 };
 
 var document = new Document
 {
-    Name = "ИНН",
-    Organizations = new List<Organization> { organization }
+    Name = "Фото",
+    Organizations = { organization }
 };
 
-var condition = new Condition
+Guide guide = new Guide
 {
-    PropertyKey = "HasINN",
-    Operator = "==",
-    Value = "false"
+    Message = "У вас имеется ИНН",
+    Refuse = "Вам необходимо получить ИНН"
+};
+
+Profile profile = new Profile
+{
+    Status = true
 };
 
 var rule = new RuleBuilder()
-    .SetName("Получение ИНН")
-    .SetCondition(condition)
+    .SetName("Получение Фото")
     .SetDocument(document)
     .SetGuide(guide)
     .Build();
 
-var id = service.CreateRule(rule);
-Console.WriteLine($"Rule Id = {id}");
+unitOfWork.Rules.Add(rule);
+unitOfWork.Complete();
 
+Console.WriteLine("Add rule");
 
-var savedRule = service.GetById(id);
-Console.WriteLine(savedRule?.Name);
-
-var rules = service.GetAllRules();
+var rules = unitOfWork.Rules.GetAll();
 
 foreach(var r in rules)
 {
-    Console.WriteLine($"{r.Id} {r.Name}");
+    Console.WriteLine(r.Name);
 }
-*/
-
-var profile = new Profile();
-Console.Write("Есть ИНН? (true/false): ");
-
-var hasINN = Console.ReadLine();
-
-profile.profileProperties.Add(
-    new ProfileProperties
-    {
-        Name = "HasINN",
-        Value = hasINN ?? "false"
-    });
-
-Console.Write("Участник госпрограммы? (true/false): ");
-var resettLementStatus = Console.ReadLine();
-
-profile.profileProperties.Add
-    (
-        new ProfileProperties
-        {
-            Name = "ResettLementStatus",
-            Value = resettLementStatus ?? "false"
-        });
-
-Console.Write("Есть сертификат? ");
-var hasSertificate = Console.ReadLine();
-
-profile.profileProperties.Add
-    (
-        new ProfileProperties
-        {
-            Name = "HasSertificate",
-            Value = hasSertificate ?? "false"
-        });
-
-
-
-
-
-
-
-
-
-var evaluator = new RuleEvaluator();
-
-
-var rules = service.GetAllRules();
-
-var matchedRules = evaluator.Evaluate(profile, rules);
-
-foreach (var rule in matchedRules)
-{
-    Console.WriteLine($"Правило: {rule.Name}");
-    Console.WriteLine($"Отказ: {rule.Guide.Refuse}");
-    Console.WriteLine($"Документ: {rule.Document.Name}");
-}
-

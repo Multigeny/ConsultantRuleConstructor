@@ -25,11 +25,6 @@ namespace ConsultantRuleConstructor
             _rule.Guide = guide;
             return this;
         }
-        public RuleBuilder SetCondition(Condition condition)
-        {
-            _rule.Condition = condition;
-            return this;
-        }
 
         public Rule Build()
         {

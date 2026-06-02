@@ -7,6 +7,6 @@ namespace ConsultantRuleConstructor.Entities
     internal class Profile
     {
         public int Id { get; set; }
-        public List<ProfileProperties> profileProperties { get; set; } = [];
+        public bool Status { get; set; }
     }
 }

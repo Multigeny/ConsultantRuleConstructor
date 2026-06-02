@@ -11,21 +11,6 @@ namespace ConsultantRuleConstructor.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Conditions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PropertyKey = table.Column<string>(type: "TEXT", nullable: false),
-                    Operator = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Conditions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Documents",
                 columns: table => new
                 {
@@ -57,7 +42,8 @@ namespace ConsultantRuleConstructor.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Status = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,18 +78,11 @@ namespace ConsultantRuleConstructor.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     DocumentId = table.Column<int>(type: "INTEGER", nullable: false),
-                    GuideId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ConditionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GuideId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rules", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Rules_Conditions_ConditionId",
-                        column: x => x.ConditionId,
-                        principalTable: "Conditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Rules_Documents_DocumentId",
                         column: x => x.DocumentId,
@@ -118,41 +97,10 @@ namespace ConsultantRuleConstructor.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ProfileProperties",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    ProfileId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProfileProperties", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProfileProperties_Profiles_ProfileId",
-                        column: x => x.ProfileId,
-                        principalTable: "Profiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Organizations_DocumentId",
                 table: "Organizations",
                 column: "DocumentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProfileProperties_ProfileId",
-                table: "ProfileProperties",
-                column: "ProfileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Rules_ConditionId",
-                table: "Rules",
-                column: "ConditionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rules_DocumentId",
@@ -172,16 +120,10 @@ namespace ConsultantRuleConstructor.Migrations
                 name: "Organizations");
 
             migrationBuilder.DropTable(
-                name: "ProfileProperties");
-
-            migrationBuilder.DropTable(
-                name: "Rules");
-
-            migrationBuilder.DropTable(
                 name: "Profiles");
 
             migrationBuilder.DropTable(
-                name: "Conditions");
+                name: "Rules");
 
             migrationBuilder.DropTable(
                 name: "Documents");

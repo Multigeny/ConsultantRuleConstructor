@@ -11,14 +11,11 @@ namespace ConsultantRuleConstructor.Entities
 
 
         public Document Document { get; set; }
-        public int DocumentId { get; set; }
 
 
         public Guide Guide { get; set; }
-        public int GuideId { get; set; }
 
-        public Condition Condition { get; set; }
-        public int ConditionId { get; set; }
+
 
     }
 }

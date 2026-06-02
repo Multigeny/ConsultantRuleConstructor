@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConsultantRuleConstructor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6575f3434dcb3ae9a9c9a4802bc8f51bcea6aac1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+847cc5c45c0801183da56f44e3b7f5ce7efeded7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConsultantRuleConstructor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConsultantRuleConstructor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

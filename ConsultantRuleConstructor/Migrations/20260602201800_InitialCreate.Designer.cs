@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConsultantRuleConstructor.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260602091950_InitialCreate")]
+    [Migration("20260602201800_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -18,29 +18,6 @@ namespace ConsultantRuleConstructor.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
-
-            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Condition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Operator")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PropertyKey")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Conditions");
-                });
 
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Document", b =>
                 {
@@ -106,42 +83,18 @@ namespace ConsultantRuleConstructor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("Profiles");
-                });
-
-            modelBuilder.Entity("ConsultantRuleConstructor.Entities.ProfileProperties", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("ProfileProperties");
                 });
 
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Rule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ConditionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DocumentId")
@@ -155,8 +108,6 @@ namespace ConsultantRuleConstructor.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ConditionId");
 
                     b.HasIndex("DocumentId");
 
@@ -172,25 +123,8 @@ namespace ConsultantRuleConstructor.Migrations
                         .HasForeignKey("DocumentId");
                 });
 
-            modelBuilder.Entity("ConsultantRuleConstructor.Entities.ProfileProperties", b =>
-                {
-                    b.HasOne("ConsultantRuleConstructor.Entities.Profile", "Profile")
-                        .WithMany("profileProperties")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profile");
-                });
-
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Rule", b =>
                 {
-                    b.HasOne("ConsultantRuleConstructor.Entities.Condition", "Condition")
-                        .WithMany()
-                        .HasForeignKey("ConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ConsultantRuleConstructor.Entities.Document", "Document")
                         .WithMany()
                         .HasForeignKey("DocumentId")
@@ -203,8 +137,6 @@ namespace ConsultantRuleConstructor.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Condition");
-
                     b.Navigation("Document");
 
                     b.Navigation("Guide");
@@ -213,11 +145,6 @@ namespace ConsultantRuleConstructor.Migrations
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Document", b =>
                 {
                     b.Navigation("Organizations");
-                });
-
-            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Profile", b =>
-                {
-                    b.Navigation("profileProperties");
                 });
 #pragma warning restore 612, 618
         }
