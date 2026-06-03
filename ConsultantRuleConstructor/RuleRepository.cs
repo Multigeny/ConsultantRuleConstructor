@@ -25,7 +25,7 @@ namespace ConsultantRuleConstructor
         public List<Rule> GetAll()
         {
             return _context.Rules
-                .Include(r => r.Document)
+                .Include(r => r.Guide)
                     .ThenInclude(d => d.Organizations)
                 .Include(r => r.Guide).ToList();
         }
@@ -33,7 +33,7 @@ namespace ConsultantRuleConstructor
         public Rule? GetById(int Id)
         {
             return _context.Rules
-                .Include(r => r.Document)
+                .Include(r => r.Guide)
                     .ThenInclude(d => d.Organizations)
                 .Include(r => r.Guide)
                 .FirstOrDefault(r => r.Id == Id);

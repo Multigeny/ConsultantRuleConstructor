@@ -81,11 +81,7 @@ static void CreateRule(
 
     var document = new Document
     {
-        Name = documentName ?? "",
-        Organizations = new List<Organization>
-        {
-            organization
-        }
+        Name = documentName ?? ""
     };
 
     var guide = new Guide
@@ -103,6 +99,7 @@ static void CreateRule(
     var rule = new RuleBuilder()
             .SetName(ruleName ?? "")
             .SetDocument(document)
+            .SetOrganization(organization)
             .SetGuide(guide)
             .AddProfile(profile)
             .Build();
@@ -155,7 +152,7 @@ static void ShowRuleById(
     Console.WriteLine($"Описание правила: {rule.Guide.Message}");
     Console.WriteLine($"Описание отказа правила {rule.Guide.Refuse}"); 
     
-    foreach (var organization in rule.Document.Organizations)
+    foreach (var organization in rule.Guide.Organizations)
     {
         Console.WriteLine($"\t Организация: {organization.Name}");
         Console.WriteLine($"\t Адрес: {organization.Address}");

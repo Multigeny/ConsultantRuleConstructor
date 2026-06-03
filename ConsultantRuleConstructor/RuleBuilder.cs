@@ -14,6 +14,11 @@ namespace ConsultantRuleConstructor
             _rule.Name = name;
             return this;
         }
+        public RuleBuilder SetOrganization(Organization organization)
+        {
+            _rule.Guide.Organizations.Add(organization);
+            return this;
+        }
 
         public RuleBuilder AddProfile(Profile profile)
         {

@@ -9,5 +9,6 @@ namespace ConsultantRuleConstructor.Entities
         public int Id { get; set; }
         public string Message { get; set; } = "";
         public string Refuse { get; set; } = "";
+        public List<Organization> Organizations { get; set; } = [];
     }
 }
