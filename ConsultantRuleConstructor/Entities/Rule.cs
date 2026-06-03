@@ -12,6 +12,8 @@ namespace ConsultantRuleConstructor.Entities
 
         public Document Document { get; set; }
 
+        public List<Profile> profiles { get; set; } = [];
+
 
         public Guide Guide { get; set; }
 

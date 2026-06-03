@@ -15,6 +15,12 @@ namespace ConsultantRuleConstructor
             return this;
         }
 
+        public RuleBuilder AddProfile(Profile profile)
+        {
+            _rule.profiles.Add(profile);
+            return this;
+        }
+
         public RuleBuilder SetDocument(Document document)
         {
             _rule.Document = document;

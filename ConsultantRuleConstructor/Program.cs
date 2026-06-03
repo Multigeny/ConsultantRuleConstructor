@@ -68,6 +68,10 @@ static void CreateRule(
     Console.Write("Адрес организации: ");
     var address = Console.ReadLine();
 
+    Console.WriteLine("Статус пользователя ");
+    var status = Console.ReadLine();
+    
+
 
     var organization = new Organization
     {
@@ -90,11 +94,17 @@ static void CreateRule(
         Refuse = refusal ?? ""
     };
 
+    var profile = new Profile
+    {
+        Status = status == "true"
+    };
+
 
     var rule = new RuleBuilder()
             .SetName(ruleName ?? "")
             .SetDocument(document)
             .SetGuide(guide)
+            .AddProfile(profile)
             .Build();
 
 
@@ -138,13 +148,17 @@ static void ShowRuleById(
     }
     Console.WriteLine($"Id: {rule.Id}");
     Console.WriteLine($"Название {rule.Name}");
-    Console.WriteLine($"Документ {rule.Document.Name}");
+    
+    Console.WriteLine($"Документ: {rule.Document.Name}");
+        
+    
     Console.WriteLine($"Описание правила: {rule.Guide.Message}");
-    Console.WriteLine($"Описание отказа правила {rule.Guide.Refuse}");
-
-    foreach(var organization in rule.Document.Organizations)
+    Console.WriteLine($"Описание отказа правила {rule.Guide.Refuse}"); 
+    
+    foreach (var organization in rule.Document.Organizations)
     {
-        Console.WriteLine($"Организация: {organization.Name}");
-        Console.WriteLine($"Адрес: {organization.Address}");
+        Console.WriteLine($"\t Организация: {organization.Name}");
+        Console.WriteLine($"\t Адрес: {organization.Address}");
     }
+
 }
