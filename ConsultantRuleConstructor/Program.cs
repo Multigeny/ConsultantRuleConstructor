@@ -4,55 +4,147 @@ using ConsultantRuleConstructor.Entities;
 using ConsultantRuleConstructor.Interfaces;
 using ConsultantRuleConstructor;
 
-using var context = new AppDbContext();
-
- IUnitOfWork unitOfWork = new UnitOfWork(context);
-
-IRuleConstructionService service = new RuleConstructionService(unitOfWork);
 
 
-Console.WriteLine(context.Database.CanConnect());
+/*Console.WriteLine(context.Database.CanConnect());
 context.Database.Migrate();
 Console.WriteLine("Migration complete");
+*/
 
+using var context = new AppDbContext();
 
-Organization organization = new Organization
+IUnitOfWork unitOfWork = new UnitOfWork(context);
+
+IRuleConstructionService service =
+    new RuleConstructionService(unitOfWork);
+
+while (true)
 {
-    Name = "Фотостудия",
-    Address = "Москва"
-};
+    Console.WriteLine();
+    Console.WriteLine("1. Создать правило");
+    Console.WriteLine("2. Получить все правила");
+    Console.WriteLine("3. Получить правило по Id");
+    Console.WriteLine("0. Выход");
 
-var document = new Document
+    var choice = Console.ReadLine();
+
+    switch (choice)
+    {
+        case "1":
+            CreateRule(service);
+            break;
+
+        case "2":
+            ShowAllRules(service);
+            break;
+
+        case "3":
+            ShowRuleById(service);
+            break;
+
+        case "0":
+            return;
+    }
+}
+
+static void CreateRule(
+    IRuleConstructionService service)
 {
-    Name = "Фото",
-    Organizations = { organization }
-};
+    Console.Write("Название правила: ");
+    var ruleName = Console.ReadLine();
 
-Guide guide = new Guide
+    Console.Write("Название документа: ");
+    var documentName = Console.ReadLine();
+
+    Console.Write("Описание: ");
+    var description = Console.ReadLine();
+
+    Console.Write("Текст отказа: ");
+    var refusal = Console.ReadLine();
+
+    Console.Write("Название организации: ");
+    var organizationName = Console.ReadLine();
+
+    Console.Write("Адрес организации: ");
+    var address = Console.ReadLine();
+
+
+    var organization = new Organization
+    {
+        Name = organizationName ?? "",
+        Address = address ?? ""
+    };
+
+    var document = new Document
+    {
+        Name = documentName ?? "",
+        Organizations = new List<Organization>
+        {
+            organization
+        }
+    };
+
+    var guide = new Guide
+    {
+        Message = description ?? "",
+        Refuse = refusal ?? ""
+    };
+
+
+    var rule = new RuleBuilder()
+            .SetName(ruleName ?? "")
+            .SetDocument(document)
+            .SetGuide(guide)
+            .Build();
+
+
+    var id = service.CreateRule(rule);
+
+    Console.WriteLine();
+    Console.WriteLine($"Создано правило #{id}");
+}
+
+static void ShowAllRules(
+    IRuleConstructionService service)
 {
-    Message = "У вас имеется ИНН",
-    Refuse = "Вам необходимо получить ИНН"
-};
+    var rules = service.GetAllRules();
 
-Profile profile = new Profile
+    foreach (var rule in rules)
+    {
+        Console.WriteLine();
+        Console.WriteLine(
+            $"{rule.Id} - {rule.Name}");
+    }
+}
+
+static void ShowRuleById(
+    IRuleConstructionService service)
 {
-    Status = true
-};
+    Console.Write("Введите Id: ");
 
-var rule = new RuleBuilder()
-    .SetName("Получение Фото")
-    .SetDocument(document)
-    .SetGuide(guide)
-    .Build();
+    if (!int.TryParse(
+        Console.ReadLine(),
+        out int id))
+    {
+        return;
+    }
 
-unitOfWork.Rules.Add(rule);
-unitOfWork.Complete();
+    var rule = service.GetById(id);
 
-Console.WriteLine("Add rule");
+    if (rule == null)
+    {
+        Console.WriteLine("Правило не найдено");
+        return;
+    }
+    Console.WriteLine($"Id: {rule.Id}");
+    Console.WriteLine($"Название {rule.Name}");
+    Console.WriteLine($"Документ {rule.Document.Name}");
+    Console.WriteLine($"Описание правила: {rule.Guide.Message}");
+    Console.WriteLine($"Описание отказа правила {rule.Guide.Refuse}");
 
-var rules = unitOfWork.Rules.GetAll();
-
-foreach(var r in rules)
-{
-    Console.WriteLine(r.Name);
+    foreach(var organization in rule.Document.Organizations)
+    {
+        Console.WriteLine($"Организация: {organization.Name}");
+        Console.WriteLine($"Адрес: {organization.Address}");
+    }
 }
