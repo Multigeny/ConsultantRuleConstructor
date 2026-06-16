@@ -7,7 +7,7 @@ namespace ConsultantRuleConstructor.Interfaces
 {
     internal interface IRuleConstructionService
     {
-        int CreateRule(Rule rule);
+        int addRule(Rule rule);
         Rule? GetById(int Id);
         List<Rule> GetAllRules();
     }

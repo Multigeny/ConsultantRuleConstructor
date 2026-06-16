@@ -7,18 +7,16 @@ namespace ConsultantRuleConstructor
 {
     internal class RuleBuilder
     {
-        private readonly Rule _rule = new();
+        public Rule _rule = new Rule();
 
-        public RuleBuilder SetName(string name)
+
+        // Добавляем документы
+        public RuleBuilder addTargetDocument(Document document)
         {
-            _rule.Name = name;
+            _rule.Documents.Add(document);
             return this;
         }
-        public RuleBuilder SetOrganization(Organization organization)
-        {
-            _rule.Guide.Organizations.Add(organization);
-            return this;
-        }
+
 
         public RuleBuilder AddProfile(Profile profile)
         {
@@ -26,19 +24,24 @@ namespace ConsultantRuleConstructor
             return this;
         }
 
-        public RuleBuilder SetDocument(Document document)
+
+        public RuleBuilder SetName(string name)
         {
-            _rule.Document = document;
+            _rule.Name = name;
             return this;
         }
-        public RuleBuilder SetGuide(Guide guide)
+       
+
+
+        public RuleBuilder addGuide(Guide guide)
         {
-            _rule.Guide = guide;
+            _rule.Guids.Add(guide);
             return this;
         }
 
         public Rule Build()
         {
+
             return _rule;
         }
 

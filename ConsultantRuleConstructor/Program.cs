@@ -6,10 +6,7 @@ using ConsultantRuleConstructor;
 
 
 
-/*Console.WriteLine(context.Database.CanConnect());
-context.Database.Migrate();
-Console.WriteLine("Migration complete");
-*/
+
 
 using var context = new AppDbContext();
 
@@ -17,6 +14,7 @@ IUnitOfWork unitOfWork = new UnitOfWork(context);
 
 IRuleConstructionService service =
     new RuleConstructionService(unitOfWork);
+
 
 while (true)
 {
@@ -26,7 +24,7 @@ while (true)
     Console.WriteLine("3. Получить правило по Id");
     Console.WriteLine("0. Выход");
 
-    var choice = Console.ReadLine();
+    var choice = Console.ReadLine() ?? "";
 
     switch (choice)
     {
@@ -50,62 +48,94 @@ while (true)
 static void CreateRule(
     IRuleConstructionService service)
 {
-    Console.Write("Название правила: ");
-    var ruleName = Console.ReadLine();
 
-    Console.Write("Название документа: ");
-    var documentName = Console.ReadLine();
+    // Вводим название правила, этого в диаграмме последовательности нет, можем сделать Id названием
+    Console.Write("Введите название правила: ");
+    string ruleName = Console.ReadLine() ?? "";
+    var builder = new RuleBuilder().SetName(ruleName);
 
-    Console.Write("Описание: ");
-    var description = Console.ReadLine();
 
-    Console.Write("Текст отказа: ");
-    var refusal = Console.ReadLine();
 
-    Console.Write("Название организации: ");
-    var organizationName = Console.ReadLine();
+    // Вводим документ
+    Document document;
+    while (true)
+    {
+        document = new Document();
+        Console.Write("Название документа(пустую строку, чтобы закончить): ");
+        var documentName = Console.ReadLine() ?? "";
 
-    Console.Write("Адрес организации: ");
-    var address = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(documentName)) break;
+        document.Name = documentName;  
+        
+        builder.addTargetDocument(document);
+        
+    }
 
-    Console.WriteLine("Статус пользователя ");
-    var status = Console.ReadLine();
+
+
+
+    // Вводим профиль
+    Console.Write("Статус пользователя(true, false или пустую строку: ");
+    var status = Console.ReadLine() ?? "";
     
-
-
-    var organization = new Organization
-    {
-        Name = organizationName ?? "",
-        Address = address ?? ""
-    };
-
-    var document = new Document
-    {
-        Name = documentName ?? ""
-    };
-
-    var guide = new Guide
-    {
-        Message = description ?? "",
-        Refuse = refusal ?? ""
-    };
-
+        
     var profile = new Profile
     {
-        Status = status == "true"
+        resettlementStatus = status == "true",
+        requiredDocuments = builder._rule.Documents
     };
+    builder = new RuleBuilder().AddProfile(profile);
 
 
-    var rule = new RuleBuilder()
-            .SetName(ruleName ?? "")
-            .SetDocument(document)
-            .SetOrganization(organization)
-            .SetGuide(guide)
-            .AddProfile(profile)
-            .Build();
+    Console.WriteLine("Добавим еще руководства и организации к ним и правило будет создано");
+
+    // Руководство
+    while (true)
+    {
+        Guide guide = new Guide();
+
+        // Если сообщение или текст отказа пустые, то завершаем и то, и другое не записывая ничего
+        Console.WriteLine("Введите текст руководства");
+        string messageText = Console.ReadLine() ?? "" ?? "";
+        if (string.IsNullOrWhiteSpace(messageText)) break;
+
+        Console.WriteLine("Введите текст отказа");
+        string refuseText = Console.ReadLine() ?? "";                
+        if (string.IsNullOrWhiteSpace(refuseText)) break;
 
 
-    var id = service.CreateRule(rule);
+        guide.Message = messageText;
+        guide.Refuse = refuseText;
+
+
+        // Организации
+        List<Organization> organizations = [];
+        while (true)
+        {
+            Console.Write("Введите название организации, где можно получить документ(или пустую строку, чтобы закончить): ");
+            string name = Console.ReadLine() ?? "";
+            if (string.IsNullOrWhiteSpace(name)) break;
+
+            Console.Write("Введите адрес организации, где можно получить документ(или пустую строку, чтобы закончить): ");
+            string address = Console.ReadLine() ?? "";
+            if (string.IsNullOrWhiteSpace(address)) break;
+
+            guide.Organizations.Add(new Organization
+            {
+                Name = name,
+                Address = address
+            });
+        }
+
+
+
+        builder = new RuleBuilder().addGuide(guide);
+
+    }
+
+    Rule rule = builder.Build();
+
+    var id = service.addRule(rule);
 
     Console.WriteLine();
     Console.WriteLine($"Создано правило #{id}");
@@ -146,16 +176,23 @@ static void ShowRuleById(
     Console.WriteLine($"Id: {rule.Id}");
     Console.WriteLine($"Название {rule.Name}");
     
-    Console.WriteLine($"Документ: {rule.Document.Name}");
-        
-    
-    Console.WriteLine($"Описание правила: {rule.Guide.Message}");
-    Console.WriteLine($"Описание отказа правила {rule.Guide.Refuse}"); 
-    
-    foreach (var organization in rule.Guide.Organizations)
+    foreach(Document documents in rule.Documents)
     {
-        Console.WriteLine($"\t Организация: {organization.Name}");
-        Console.WriteLine($"\t Адрес: {organization.Address}");
+
+        Console.WriteLine($"Документы: {documents.Name}");
     }
+        
+    foreach(var guide in rule.Guids)
+    {
+        Console.WriteLine($"Описание правила: {guide.Message}");
+        Console.WriteLine($"Описание отказа правила {guide.Refuse}");
+
+        foreach (var organization in guide.Organizations)
+        {
+            Console.WriteLine($"\t Организация: {organization.Name}");
+            Console.WriteLine($"\t Адрес: {organization.Address}");
+        }
+    }
+    
 
 }

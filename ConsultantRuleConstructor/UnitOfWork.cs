@@ -1,5 +1,6 @@
 ﻿using ConsultantRuleConstructor.Data;
 using ConsultantRuleConstructor.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,10 @@ namespace ConsultantRuleConstructor
         {
             _context = context;
 
-            Rules = new RuleRepository(context);
+            Rules = new RuleRepository(_context);
+            Console.WriteLine(context.Database.CanConnect());
+            _context.Database.Migrate();
+            Console.WriteLine("Migration complete");
         }
 
 

@@ -13,7 +13,6 @@ namespace ConsultantRuleConstructor.Data
         public DbSet<Guide> Guides => Set<Guide>();
         public DbSet<Organization> Organizations => Set<Organization>();
         public DbSet<Profile> Profiles => Set<Profile>();
-        public DbSet<List<Profile>> ListProfiles => Set<List<Profile>>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

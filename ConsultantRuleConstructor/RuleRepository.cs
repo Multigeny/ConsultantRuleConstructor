@@ -25,17 +25,17 @@ namespace ConsultantRuleConstructor
         public List<Rule> GetAll()
         {
             return _context.Rules
-                .Include(r => r.Guide)
+                .Include(r => r.Guids)
                     .ThenInclude(d => d.Organizations)
-                .Include(r => r.Guide).ToList();
+                .Include(r => r.Guids).ToList();
         }
 
         public Rule? GetById(int Id)
         {
             return _context.Rules
-                .Include(r => r.Guide)
+                .Include(r => r.Guids)
                     .ThenInclude(d => d.Organizations)
-                .Include(r => r.Guide)
+                .Include(r => r.Guids)
                 .FirstOrDefault(r => r.Id == Id);
 
         }

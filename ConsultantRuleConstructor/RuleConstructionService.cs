@@ -15,7 +15,7 @@ namespace ConsultantRuleConstructor
             _uow = uow;
         }
 
-        public int CreateRule(Rule rule)
+        public int addRule(Rule rule)
         {
             _uow.Rules.Add(rule);
             _uow.Complete();

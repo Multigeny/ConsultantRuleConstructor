@@ -14,7 +14,7 @@ namespace ConsultantRuleConstructor.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
 
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Document", b =>
                 {
@@ -26,7 +26,17 @@ namespace ConsultantRuleConstructor.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ProfileId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("RuleId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.HasIndex("RuleId");
 
                     b.ToTable("Documents");
                 });
@@ -45,7 +55,12 @@ namespace ConsultantRuleConstructor.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("RuleId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RuleId");
 
                     b.ToTable("Guides");
                 });
@@ -60,7 +75,7 @@ namespace ConsultantRuleConstructor.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("DocumentId")
+                    b.Property<int?>("GuideId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -69,7 +84,7 @@ namespace ConsultantRuleConstructor.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentId");
+                    b.HasIndex("GuideId");
 
                     b.ToTable("Organizations");
                 });
@@ -80,10 +95,15 @@ namespace ConsultantRuleConstructor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Status")
+                    b.Property<int?>("RuleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("resettlementStatus")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RuleId");
 
                     b.ToTable("Profiles");
                 });
@@ -94,54 +114,64 @@ namespace ConsultantRuleConstructor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GuideId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("GuideId");
-
                     b.ToTable("Rules");
-                });
-
-            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Organization", b =>
-                {
-                    b.HasOne("ConsultantRuleConstructor.Entities.Document", null)
-                        .WithMany("Organizations")
-                        .HasForeignKey("DocumentId");
-                });
-
-            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Rule", b =>
-                {
-                    b.HasOne("ConsultantRuleConstructor.Entities.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ConsultantRuleConstructor.Entities.Guide", "Guide")
-                        .WithMany()
-                        .HasForeignKey("GuideId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Document");
-
-                    b.Navigation("Guide");
                 });
 
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Document", b =>
                 {
+                    b.HasOne("ConsultantRuleConstructor.Entities.Profile", null)
+                        .WithMany("requiredDocuments")
+                        .HasForeignKey("ProfileId");
+
+                    b.HasOne("ConsultantRuleConstructor.Entities.Rule", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("RuleId");
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Guide", b =>
+                {
+                    b.HasOne("ConsultantRuleConstructor.Entities.Rule", null)
+                        .WithMany("Guids")
+                        .HasForeignKey("RuleId");
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Organization", b =>
+                {
+                    b.HasOne("ConsultantRuleConstructor.Entities.Guide", null)
+                        .WithMany("Organizations")
+                        .HasForeignKey("GuideId");
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Profile", b =>
+                {
+                    b.HasOne("ConsultantRuleConstructor.Entities.Rule", null)
+                        .WithMany("profiles")
+                        .HasForeignKey("RuleId");
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Guide", b =>
+                {
                     b.Navigation("Organizations");
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Profile", b =>
+                {
+                    b.Navigation("requiredDocuments");
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Rule", b =>
+                {
+                    b.Navigation("Documents");
+
+                    b.Navigation("Guids");
+
+                    b.Navigation("profiles");
                 });
 #pragma warning restore 612, 618
         }

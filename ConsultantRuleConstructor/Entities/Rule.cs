@@ -7,15 +7,14 @@ namespace ConsultantRuleConstructor.Entities
     internal class Rule
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
-
-        public Document Document { get; set; }
+        public List<Document> Documents { get; set; } = [];
 
         public List<Profile> profiles { get; set; } = [];
 
 
-        public Guide Guide { get; set; }
+        public List<Guide> Guids { get; set; } = [];
 
 
 
