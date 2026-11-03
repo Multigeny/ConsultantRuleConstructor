@@ -22,11 +22,19 @@ namespace ConsultantRuleConstructor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsTarget")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("RuleId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RuleId");
 
                     b.ToTable("Documents");
                 });
@@ -85,14 +93,9 @@ namespace ConsultantRuleConstructor.Migrations
                     b.Property<bool>("ResettlementProgramStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TargetDocumentId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GuideId");
-
-                    b.HasIndex("TargetDocumentId");
 
                     b.ToTable("Rules");
                 });
@@ -112,6 +115,14 @@ namespace ConsultantRuleConstructor.Migrations
                     b.ToTable("GuideOrganization");
                 });
 
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Document", b =>
+                {
+                    b.HasOne("ConsultantRuleConstructor.Entities.Rule", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("RuleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("ConsultantRuleConstructor.Entities.Rule", b =>
                 {
                     b.HasOne("ConsultantRuleConstructor.Entities.Guide", "Guide")
@@ -120,15 +131,7 @@ namespace ConsultantRuleConstructor.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ConsultantRuleConstructor.Entities.Document", "TargetDocument")
-                        .WithMany()
-                        .HasForeignKey("TargetDocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Guide");
-
-                    b.Navigation("TargetDocument");
                 });
 
             modelBuilder.Entity("GuideOrganization", b =>
@@ -144,6 +147,11 @@ namespace ConsultantRuleConstructor.Migrations
                         .HasForeignKey("OrganizationsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ConsultantRuleConstructor.Entities.Rule", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

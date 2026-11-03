@@ -10,7 +10,7 @@ namespace ConsultantRuleConstructor.Data
         public int Id { get; set; } = 0;
         public string Name { get; set; } = "";
         public bool ResettlementProgramStatus { get; set; }
-        public DocumentDto? TargetDocument { get; set; } = null;
+        public List<DocumentDto> Documents { get; set; } = [];
         public GuideDto? Guide { get; set; } = null;
     }
 }

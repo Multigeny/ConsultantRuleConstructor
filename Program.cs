@@ -55,8 +55,38 @@ static void CreateRule(
     Console.Write("Название: ");
     data.Name = Console.ReadLine();
 
-    Console.Write("Целевой документ: ");
-    data.TargetDocument = new DocumentDto() { Name = Console.ReadLine() };
+    // ============================== Документы ==============================
+
+    Console.WriteLine("Добавление документов.");
+    Console.WriteLine("Целевой документ — тот, который должен быть");
+    Console.WriteLine("Необходимые — те, что нужны, если целевого нет.");
+
+    var addDocs = true;
+    var docNum = 1;
+    while (addDocs)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Документ {docNum}:");
+        Console.Write("Наименование (пусто — закончить): ");
+        var name = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            addDocs = false;
+            break;
+        }
+
+        Console.WriteLine("1 - Целевой");
+        Console.WriteLine("2 - Необходимый");
+        Console.Write("Тип: ");
+        var typeChoice = Console.ReadLine();
+
+        data.Documents.Add(new DocumentDto
+        {
+            Name = name,
+            IsTarget = typeChoice == "1"
+        });
+        docNum++;
+    }
 
 
     // ============================== Статус переселенца ==============================
@@ -157,7 +187,22 @@ static void ShowRuleById(
 
     Console.WriteLine($"Id: {rule.Id}");
     Console.WriteLine($"Название: {rule.Name}");
-    Console.WriteLine($"Целевой документ: {rule.TargetDocument.Name}");
+
+
+    Console.WriteLine("===== Документы =====");
+    if (rule.Documents.Count == 0)
+    {
+        Console.WriteLine("- (нет)");
+    }
+    else
+    {
+        foreach ((int index, DocumentDto doc) in rule.Documents.Index())
+        {
+            var mark = doc.IsTarget ? " [целевой]" : " [необходимый]";
+            Console.WriteLine($"\t{index}) {doc.Name}{mark}");
+        }
+    }
+
     Console.WriteLine("===== Руководство =====");
     Console.WriteLine($"- Текст: {rule.Guide.Message}");
     Console.WriteLine($"- Текст отказа: {rule.Guide.Refuse}");

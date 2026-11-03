@@ -29,6 +29,7 @@ namespace ConsultantRuleConstructor.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Guide>().HasMany(g => g.Organizations).WithMany();
+            modelBuilder.Entity<Rule>().HasMany(r => r.Documents).WithOne().OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

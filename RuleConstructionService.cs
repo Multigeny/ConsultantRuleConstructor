@@ -26,9 +26,16 @@ namespace ConsultantRuleConstructor
             builder.SetName(ruleDto.Name);
 
             // ==================== Целевой документ ====================
-            builder.SetTargetDocument(new Document() { Name = ruleDto.TargetDocument.Name });
 
-            // ==================== Профили ====================
+            builder.SetDocuments(
+                ruleDto.Documents.Select(d => new Document
+                {
+                    Name = d.Name,
+                    IsTarget = d.IsTarget
+                })
+            );
+
+            // ==================== Статус участника ====================
             builder.setResettlementProgramStatus(ruleDto.ResettlementProgramStatus);
 
             // ==================== Руководство ====================
@@ -52,7 +59,7 @@ namespace ConsultantRuleConstructor
         public List<RuleDto> GetAllRules()
         {
             return _dbContext.Rules
-                .Include(r => r.TargetDocument)
+                .Include(r => r.Documents)
                 .Include(r => r.Guide)
                     .ThenInclude(g => g.Organizations)
                 .Select(rule =>
@@ -61,7 +68,15 @@ namespace ConsultantRuleConstructor
                         Id = rule.Id,
                         Name = rule.Name,
                         ResettlementProgramStatus = rule.ResettlementProgramStatus,
-                        TargetDocument = new DocumentDto() { Id = rule.TargetDocument.Id, Name = rule.TargetDocument.Name },
+
+                        Documents = rule.Documents
+                            .Select(d => new DocumentDto
+                            {
+                                Id = d.Id,
+                                Name = d.Name,
+                                IsTarget = d.IsTarget
+                            }).ToList(),
+
                         Guide = new GuideDto()
                         {
                             Id = rule.Guide.Id,
@@ -81,7 +96,7 @@ namespace ConsultantRuleConstructor
         public RuleDto? GetById(int Id)
         {
             var ruleEntity = _dbContext.Rules
-                .Include(r => r.TargetDocument)
+                .Include(r => r.Documents)
                 .Include(r => r.Guide)
                     .ThenInclude(g => g.Organizations)
                 .FirstOrDefault(r => r.Id == Id);
@@ -93,7 +108,15 @@ namespace ConsultantRuleConstructor
                 Id = ruleEntity.Id,
                 Name = ruleEntity.Name,
                 ResettlementProgramStatus = ruleEntity.ResettlementProgramStatus,
-                TargetDocument = new DocumentDto() { Id = ruleEntity.TargetDocument.Id, Name = ruleEntity.TargetDocument.Name },
+
+                Documents = ruleEntity.Documents
+                    .Select(d => new DocumentDto
+                         {
+                             Id = d.Id,
+                             Name = d.Name,
+                             IsTarget = d.IsTarget
+                         }).ToList(),
+
                 Guide = new GuideDto()
                 {
                     Id = ruleEntity.Guide.Id,

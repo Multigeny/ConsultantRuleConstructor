@@ -15,9 +15,9 @@ namespace ConsultantRuleConstructor
             return this;
         }
 
-        public RuleBuilder SetTargetDocument(Document document)
+        public RuleBuilder SetDocuments(IEnumerable<Document> documents)
         {
-            _rule.TargetDocument = document;
+            _rule.Documents = documents.ToList();
             return this;
         }
         public RuleBuilder SetGuide(Guide guide)

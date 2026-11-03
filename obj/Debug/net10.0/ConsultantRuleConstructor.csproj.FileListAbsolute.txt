@@ -278,3 +278,4 @@ C:\Users\user\Yandex.Disk-SharedResources-stud0000275444@utmn.ru\d_eLYywtM_EPH7R
 C:\Users\user\Yandex.Disk-SharedResources-stud0000275444@utmn.ru\d_eLYywtM_EPH7Rw\ConsultantRuleConstructor\obj\Debug\net10.0\ConsultantRuleConstructor.pdb
 C:\Users\user\Yandex.Disk-SharedResources-stud0000275444@utmn.ru\d_eLYywtM_EPH7Rw\ConsultantRuleConstructor\obj\Debug\net10.0\ConsultantRuleConstructor.genruntimeconfig.cache
 C:\Users\user\Yandex.Disk-SharedResources-stud0000275444@utmn.ru\d_eLYywtM_EPH7Rw\ConsultantRuleConstructor\obj\Debug\net10.0\ref\ConsultantRuleConstructor.dll
+C:\Users\user\Yandex.Disk-SharedResources-stud0000275444@utmn.ru\d_eLYywtM_EPH7Rw\ConsultantRuleConstructor\obj\Debug\net10.0\ConsultantRuleConstructor.sourcelink.json
