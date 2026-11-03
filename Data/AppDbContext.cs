@@ -12,7 +12,6 @@ namespace ConsultantRuleConstructor.Data
         public DbSet<Document> Documents => Set<Document>();
         public DbSet<Guide> Guides => Set<Guide>();
         public DbSet<Organization> Organizations => Set<Organization>();
-        public DbSet<Profile> Profiles => Set<Profile>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -29,7 +28,6 @@ namespace ConsultantRuleConstructor.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Profile>().HasMany(p => p.RequiredDocuments).WithMany();
             modelBuilder.Entity<Guide>().HasMany(g => g.Organizations).WithMany();
 
             base.OnModelCreating(modelBuilder);

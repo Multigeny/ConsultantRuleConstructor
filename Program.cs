@@ -1,8 +1,9 @@
-﻿using ConsultantRuleConstructor.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using ConsultantRuleConstructor;
+using ConsultantRuleConstructor.Data;
 using ConsultantRuleConstructor.Entities;
 using ConsultantRuleConstructor.Interfaces;
-using ConsultantRuleConstructor;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -57,6 +58,24 @@ static void CreateRule(
     Console.Write("Целевой документ: ");
     data.TargetDocument = new DocumentDto() { Name = Console.ReadLine() };
 
+
+    // ============================== Статус переселенца ==============================
+
+    Console.WriteLine("Статут программы переселения соотечественников:");
+    Console.WriteLine("1 - Не является участником");
+    Console.WriteLine("2 - Является участником");
+    Console.Write("Выбор: ");
+    var resettlementProgramStatusChoice = Console.ReadLine();
+    switch (resettlementProgramStatusChoice)
+    {
+        case "1":
+            data.ResettlementProgramStatus = false;
+            break;
+        case "2":
+            data.ResettlementProgramStatus = true;
+            break;
+    }
+
     // ============================== Руководство ==============================
     var guide = new GuideDto();
     Console.Write("Текст руководства: ");
@@ -94,72 +113,7 @@ static void CreateRule(
     }
     data.Guide = guide;
 
-    // ============================== Профили ==============================
-    Console.WriteLine("=========== Создание профилей правила ===========");
-    var doProfileCreating = true;
-    var profileNum = 1;
-    while (doProfileCreating)
-    {
-        var profile = new ProfileDto();
 
-        Console.WriteLine("Выберете действие:");
-        Console.WriteLine("1 - Добавить профиль");
-        Console.WriteLine("0 - Закончить");
-        Console.Write("Выбор: ");
-        var profileEventChoice = Console.ReadLine();
-        switch (profileEventChoice)
-        {
-            case "0":
-                doProfileCreating = false;
-                break;
-            case "1":
-                Console.WriteLine("Профиль " + profileNum + ":");
-
-                Console.WriteLine("Статут программы переселения соотечественников:");
-                Console.WriteLine("1 - Не является участником");
-                Console.WriteLine("2 - Является участником");
-                Console.Write("Выбор: ");
-                var resettlementProgramStatusChoice = Console.ReadLine();
-                switch (resettlementProgramStatusChoice)
-                {
-                    case "1":
-                        profile.ResettlementProgramStatus = false;
-                        break;
-                    case "2":
-                        profile.ResettlementProgramStatus = true;
-                        break;
-                }
-
-                // ============================== Требуемые документы ==============================
-                var doRequiredDocumentsAdding = true;
-                var documentNum = 1;
-                while (doRequiredDocumentsAdding)
-                {
-                    Console.WriteLine("Выберете действие:");
-                    Console.WriteLine("1 - Добавить требуемый документ");
-                    Console.WriteLine("0 - Закончить");
-                    Console.Write("Выбор: ");
-                    var requiredDocumentEventChoice = Console.ReadLine();
-                    switch (requiredDocumentEventChoice)
-                    {
-                        case "0":
-                            doRequiredDocumentsAdding = false;
-                            break;
-                        case "1":
-                            Console.WriteLine("Требуемый документ " + documentNum + ":");
-                            Console.Write("Название документа: ");
-                            profile.RequiredDocuments.Add(new DocumentDto() { Name = Console.ReadLine() });
-                            documentNum++;
-                            break;
-                    }
-                }
-
-                data.Profiles.Add(profile);
-
-                profileNum++;
-                break;
-        }
-    }
 
     var id = service.CreateRule(data);
 
@@ -212,15 +166,5 @@ static void ShowRuleById(
     {
         Console.WriteLine($"\t{index}) {organization.Name}. Адрес: {organization.Address}");
     }
-    Console.WriteLine("===== Профили =====");
-    foreach ((int index, ProfileDto profile) in rule.Profiles.Index())
-    {
-        Console.WriteLine($"{index}:");
-        Console.WriteLine($"- Статус программы переселения соотечественников: {profile.ResettlementProgramStatus}");
-        Console.WriteLine("- Требуемые документы:");
-        foreach ((int docIndex, DocumentDto document) in profile.RequiredDocuments.Index())
-        {
-            Console.WriteLine($"\t{docIndex}) {document.Name}");
-        }
-    }
+    
 }

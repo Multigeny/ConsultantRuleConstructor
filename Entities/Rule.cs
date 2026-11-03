@@ -10,6 +10,6 @@ namespace ConsultantRuleConstructor.Entities
         public string Name { get; set; }
         public Document TargetDocument { get; set; }
         public Guide Guide { get; set; }
-        public List<Profile> Profiles { get; set; } = new List<Profile>();
+        public bool ResettlementProgramStatus { get; set; }
     }
 }

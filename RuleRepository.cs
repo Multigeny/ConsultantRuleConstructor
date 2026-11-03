@@ -27,7 +27,6 @@ namespace ConsultantRuleConstructor
             return _context.Rules
                 .Include(r => r.TargetDocument)
                 .Include(r => r.Guide)
-                .Include(r => r.Profiles)
                 .ToList();
         }
 
@@ -36,7 +35,6 @@ namespace ConsultantRuleConstructor
             return _context.Rules
                 .Include(r => r.TargetDocument)
                 .Include(r => r.Guide)
-                .Include(r => r.Profiles)
                 .FirstOrDefault(r => r.Id == Id);
 
         }

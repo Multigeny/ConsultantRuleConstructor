@@ -29,19 +29,7 @@ namespace ConsultantRuleConstructor
             builder.SetTargetDocument(new Document() { Name = ruleDto.TargetDocument.Name });
 
             // ==================== Профили ====================
-            foreach (ProfileDto profileDto in ruleDto.Profiles)
-            {
-                var profile = new Profile();
-
-                profile.ResettlementProgramStatus = profileDto.ResettlementProgramStatus;
-
-                foreach (DocumentDto documentDto in profileDto.RequiredDocuments)
-                {
-                    profile.RequiredDocuments.Add(new Document() { Name = documentDto.Name });
-                }
-
-                builder.AddProfile(profile);
-            }
+            builder.setResettlementProgramStatus(ruleDto.ResettlementProgramStatus);
 
             // ==================== Руководство ====================
             var guide = new Guide();
@@ -66,12 +54,13 @@ namespace ConsultantRuleConstructor
             return _dbContext.Rules
                 .Include(r => r.TargetDocument)
                 .Include(r => r.Guide)
-                .Include(r => r.Profiles).ThenInclude(p => p.RequiredDocuments)
+                    .ThenInclude(g => g.Organizations)
                 .Select(rule =>
                     new RuleDto()
                     {
                         Id = rule.Id,
                         Name = rule.Name,
+                        ResettlementProgramStatus = rule.ResettlementProgramStatus,
                         TargetDocument = new DocumentDto() { Id = rule.TargetDocument.Id, Name = rule.TargetDocument.Name },
                         Guide = new GuideDto()
                         {
@@ -84,14 +73,7 @@ namespace ConsultantRuleConstructor
                                 Name = organization.Name,
                                 Address = organization.Address
                             }).ToList()
-                        },
-                        Profiles = rule.Profiles.Select(profile =>
-                            new ProfileDto()
-                            {
-                                Id = profile.Id,
-                                ResettlementProgramStatus = profile.ResettlementProgramStatus,
-                                RequiredDocuments = profile.RequiredDocuments.Select(document => new DocumentDto() { Id = document.Id, Name = document.Name }).ToList()
-                            }).ToList()
+                        }
                     }
             ).ToList();
         }
@@ -101,7 +83,7 @@ namespace ConsultantRuleConstructor
             var ruleEntity = _dbContext.Rules
                 .Include(r => r.TargetDocument)
                 .Include(r => r.Guide)
-                .Include(r => r.Profiles)
+                    .ThenInclude(g => g.Organizations)
                 .FirstOrDefault(r => r.Id == Id);
 
             if (ruleEntity == null) return null;
@@ -110,6 +92,7 @@ namespace ConsultantRuleConstructor
             {
                 Id = ruleEntity.Id,
                 Name = ruleEntity.Name,
+                ResettlementProgramStatus = ruleEntity.ResettlementProgramStatus,
                 TargetDocument = new DocumentDto() { Id = ruleEntity.TargetDocument.Id, Name = ruleEntity.TargetDocument.Name },
                 Guide = new GuideDto()
                 {
@@ -122,14 +105,7 @@ namespace ConsultantRuleConstructor
                         Name = organization.Name,
                         Address = organization.Address
                     }).ToList()
-                },
-                Profiles = ruleEntity.Profiles.Select(profile =>
-                    new ProfileDto()
-                    {
-                        Id = profile.Id,
-                        ResettlementProgramStatus = profile.ResettlementProgramStatus,
-                        RequiredDocuments = profile.RequiredDocuments.Select(document => new DocumentDto() { Id = document.Id, Name = document.Name }).ToList()
-                    }).ToList()
+                }
             };
         }
     }

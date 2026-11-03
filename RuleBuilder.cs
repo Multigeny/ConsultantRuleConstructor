@@ -26,9 +26,9 @@ namespace ConsultantRuleConstructor
             return this;
         }
 
-        public RuleBuilder AddProfile(Profile profile)
+        public RuleBuilder setResettlementProgramStatus(bool ResettlementProgramStatus)
         {
-            _rule.Profiles.Add(profile);
+            _rule.ResettlementProgramStatus = ResettlementProgramStatus;
             return this;
         }
 
